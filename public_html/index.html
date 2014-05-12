@@ -15,10 +15,10 @@
   	var $slider = $('#slider');
 
 	var audio = null;
-    function playSong(song, artist) {
-        console.log("PlaySong", song);
+    function playSong(trackid) {
+        console.log("PlaySong ", trackid);
         var req = new XMLHttpRequest();
-        req.open('GET', 'https://api.spotify.com/v1/tracks/0eGsygTp906u18L0Oimnem', true);
+        req.open('GET', 'https://api.spotify.com/v1/tracks/' + trackid, true);
         req.onreadystatechange = function() {
             if (req.readyState == 4 && req.status == 200){
                 var data = JSON.parse(req.responseText);
@@ -30,9 +30,13 @@
         req.send(null);
     }
 
-    playSong();
+    function stop() {
+        if (audio) {
+            audio.pause();
+        }
+    }
 
-  	function hexFromRGB(r, g, b) {
+    function hexFromRGB(r, g, b) {
 	    var hex = [
 	      r.toString( 16 ),
 	      g.toString( 16 ),
@@ -48,7 +52,12 @@
 
   	function refreshRager() {
   	  var red = 200 - Math.round(($slider.slider("value") / 100) * 200);
+  	  var bpm = 60 + Math.round(($slider.slider("value") / 100) * 200);
+  	  console.log("bpm: " + bpm);
   	  $("body").css("background-color", "#" + hexFromRGB(255 - red, red, 0));
+  	  bpmSearcher.search(bpm, function(trackid) {
+  	  	playSong(trackid);
+  	  });
   	}
     
     $slider.slider({
