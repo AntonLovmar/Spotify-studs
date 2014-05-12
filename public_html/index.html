@@ -1,10 +1,94 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="bpmSearcher.js" ></script>
+  <meta charset="utf-8">
+  <title>Rage slider</title>
+  <script src="bpmSearcher.js" ></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script>
+  $(function() {
+  	var $slider = $('#slider');
+
+	var audio = null;
+    function playSong(song, artist) {
+        console.log("PlaySong", song);
+        var req = new XMLHttpRequest();
+        req.open('GET', 'https://api.spotify.com/v1/tracks/0eGsygTp906u18L0Oimnem', true);
+        req.onreadystatechange = function() {
+            if (req.readyState == 4 && req.status == 200){
+                var data = JSON.parse(req.responseText);
+                stop();
+                audio = new Audio(data.preview_url);
+                audio.play();
+            }
+        };
+        req.send(null);
+    }
+
+    playSong();
+
+  	function hexFromRGB(r, g, b) {
+	    var hex = [
+	      r.toString( 16 ),
+	      g.toString( 16 ),
+	      b.toString( 16 )
+	    ];
+	    $.each( hex, function( nr, val ) {
+	      if ( val.length === 1 ) {
+	        hex[ nr ] = "0" + val;
+	      }
+	    });
+	    return hex.join( "" ).toUpperCase();
+    }
+
+  	function refreshRager() {
+  	  var red = 200 - Math.round(($slider.slider("value") / 100) * 200);
+  	  $("body").css("background-color", "#" + hexFromRGB(255 - red, red, 0));
+  	}
+    
+    $slider.slider({
+      slide: refreshRager,
+      change: refreshRager
+    });
+
+  });
+  </script>
+  <style>
+  body {
+  	background: #37C800;
+  }
+  .rage-slider {
+  	margin-top: 200px;
+  }
+  h1 {
+  	font-family: 'Avenir';
+  	font-size: 80px;
+  	color: #fff;
+  }
+  </style>
 </head>
 <body>
-Hej världen!
+<div class="container text-center rage-slider">
+  <div class="row">
+  	<div class="col-md-8 col-sm-offset-2">
+      <h1>Rage slider!</h1>
+      <br />
+      <div id="slider"></div>
+      <div id="results"></div>
+    </div>
+  </div>
+</div>
+
+<script id="results-template" type="text/x-handlebars-template">
+  {{#each items}}
+  <div style="background-image:url({{images.0.url}})" data-audio-preview="{{tracks.0.preview_url}}" class="cover"></div>
+  {{/each}}
+</script>
+
 </body>
 </html>
