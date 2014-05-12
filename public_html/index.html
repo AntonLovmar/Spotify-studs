@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Rage slider</title>
-  <script src="bpmSearcher.js" ></script>
+  <script src="angrySearcher.js" ></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -13,8 +13,9 @@
   <script>
   $(function() {
   	var $slider = $('#slider');
-
+	var gifImage = $('#gif')[0];
 	var audio = null;
+
     function playSong(trackid) {
         console.log("PlaySong ", trackid);
         var req = new XMLHttpRequest();
@@ -51,17 +52,19 @@
     }
 
   	function refreshRager() {
-  	  var red = 200 - Math.round(($slider.slider("value") / 100) * 200);
-  	  var bpm = 60 + Math.round(($slider.slider("value") / 100) * 200);
-  	  console.log("bpm: " + bpm);
+      var rage = $slider.slider("value");
+  	  var red = 200 - Math.round((rage / 100) * 200);
+  	  var gif = 1 + Math.round((rage / 100)*9);
+  	  
+  	  gifImage.src = gif + '.gif';
+
   	  $("body").css("background-color", "#" + hexFromRGB(255 - red, red, 0));
-  	  bpmSearcher.search(bpm, function(trackid) {
+  	  angrySearcher.search(rage, function(trackid) {
   	  	playSong(trackid);
   	  });
   	}
     
     $slider.slider({
-      slide: refreshRager,
       change: refreshRager
     });
 
@@ -72,12 +75,18 @@
   	background: #37C800;
   }
   .rage-slider {
-  	margin-top: 200px;
+  	margin-top: 50px;
   }
   h1 {
   	font-family: 'Avenir';
   	font-size: 80px;
   	color: #fff;
+  }
+  img {
+  	margin-bottom: 20px;
+  }
+  .gif-container {
+  	min-height: 300px;
   }
   </style>
 </head>
@@ -86,6 +95,10 @@
   <div class="row">
   	<div class="col-md-8 col-sm-offset-2">
       <h1>Rage slider!</h1>
+      <br />
+      <div class="gif-container">
+      	<img src="1.gif" id="gif"/>
+      </div>
       <br />
       <div id="slider"></div>
       <div id="results"></div>
