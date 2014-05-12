@@ -3,7 +3,7 @@ var angrySearcher = {};
 angrySearcher.search = function(percentAngry, responder) {
 	var bpm = Math.floor(60 + 1.6 * percentAngry);
 	var moods = ["relaxing","happy","excited","angry"];
-	var styles = ["pop", "rock", "punk", "black metal"];
+	var styles = ["pop", "pop", "rock", "black metal"];
 	var mood = moods[0];
 	var style = styles[0];
 
